@@ -1,3 +1,5 @@
+# https://adventofcode.com/2016/day/1
+
 from helper import get_input_split, print_result
 
 DAY = 1
@@ -26,9 +28,13 @@ make_move = (
 START_POS = [0, 0, NORTH]
 
 
+def get_dist_from_origin(pos):
+    return abs(pos[0]) + abs(pos[1])
+
+
 def p1():
     pos = START_POS
-    END_POS = ()
+    next_pos = ()
 
     for move in inp:
         dir = DIRS[move[0]]
@@ -39,16 +45,16 @@ def p1():
         next_x = x + next_x * dist
         next_y = y + next_y * dist
         pos = (next_x, next_y, next_face)
-        END_POS = (next_x, next_y)
+        next_pos = (next_x, next_y)
 
-    return abs(END_POS[0]) + abs(END_POS[1])
+    return get_dist_from_origin(next_pos)
 
 
 def p2():
     pos = START_POS
     points = set()
     points.add((0, 0))
-    END_POS = ()
+    next_pos = ()
 
     for move in inp:
         dir = DIRS[move[0]]
@@ -59,35 +65,35 @@ def p2():
         next_x = x + next_x * dist
         next_y = y + next_y * dist
         pos = (next_x, next_y, next_face)
-        END_POS = (next_x, next_y)
+        next_pos = (next_x, next_y)
 
         for i in range(x + 1, next_x):
             _pos = (i, y)
             if _pos in points:
-                return abs(_pos[0]) + abs(_pos[1])
+                return get_dist_from_origin(_pos)
             points.add(_pos)
 
         for i in range(x - 1, next_x, -1):
             _pos = (i, y)
             if _pos in points:
-                return abs(_pos[0]) + abs(_pos[1])
+                return get_dist_from_origin(_pos)
             points.add(_pos)
 
         for i in range(y + 1, next_y):
             _pos = (x, i)
             if _pos in points:
-                return abs(_pos[0]) + abs(_pos[1])
+                return get_dist_from_origin(_pos)
             points.add(_pos)
 
         for i in range(y - 1, next_y, -1):
             _pos = (x, i)
             if _pos in points:
-                return abs(_pos[0]) + abs(_pos[1])
+                return get_dist_from_origin(_pos)
             points.add(_pos)
 
-        if END_POS in points:
-            return abs(END_POS[0]) + abs(END_POS[1])
-        points.add(END_POS)
+        if next_pos in points:
+            return get_dist_from_origin(next_pos)
+        points.add(next_pos)
 
 
 print_result(DAY, p1(), p2())
