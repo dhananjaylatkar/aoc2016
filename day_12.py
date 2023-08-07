@@ -17,9 +17,10 @@ class Ins:
         return f"{self.op=} {self.x=} {self.y=}"
 
     def get_x_val(self, regs):
-        if not self.x.isdigit():
-            return regs[self.x]
-        return int(self.x)
+        return int(self.x) if regs.get(self.x) is None else regs.get(self.x)
+
+    def get_y_val(self, regs):
+        return int(self.y) if regs.get(self.y) is None else regs.get(self.y)
 
     def execute(self):
         pass
@@ -30,7 +31,10 @@ class InsCpy(Ins):
         super().__init__("cpy", x, y)
 
     def execute(self, regs, iptr):
-        regs[self.y] = self.get_x_val(regs)
+        try:
+            regs[self.y] = self.get_x_val(regs)
+        except:
+            pass
         return iptr + 1
 
 
@@ -55,11 +59,10 @@ class InsDec(Ins):
 class InsJnz(Ins):
     def __init__(self, x, y):
         super().__init__("jnz", x, y)
-        self.y = int(y)
 
     def execute(self, regs, iptr):
         if self.get_x_val(regs) != 0:
-            return iptr + self.y
+            return iptr + self.get_y_val(regs)
         return iptr + 1
 
 
@@ -77,9 +80,6 @@ def parse_input(data):
             case "jnz":
                 res.append(InsJnz(ins[1], ins[2]))
     return res
-
-
-inp = parse_input(inp)
 
 
 def help(regs):
@@ -112,4 +112,6 @@ def p2():
     return help(regs)
 
 
-print_result(DAY, p1(), p2())
+if __name__ == "__main__":
+    inp = parse_input(inp)
+    print_result(DAY, p1(), p2())
